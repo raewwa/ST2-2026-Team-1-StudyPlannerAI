@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Табло · AI Study Planner{% endblock %}
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Добре дошли</p>
+    <h1>Организирай ученето си по-лесно.</h1>
+    <p>Тук ще следиш предмети, задачи, изпити и учебен график.</p><a class="btn"
+        href="{{ url_for('main.subjects') }}">Към предметите →</a>
+</section>
+<div class="cards">
+    <article class="card">
+        <h2>Предмети</h2>
+        <p>To-do</p>
+    </article>
+    <article class="card">
+        <h2>Задачи</h2>
+        <p>To-do</p>
+    </article>
+    <article class="card">
+        <h2>Изпити</h2>
+        <p>To-do</p>
+    </article>
+</div>
+{% endblock %}

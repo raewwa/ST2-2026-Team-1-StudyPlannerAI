@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AI Study Planner{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="{{ url_for('main.dashboard') }}">AI Study Planner</a></header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Основна навигация">
+      <a href="{{ url_for('main.dashboard') }}">Табло</a>
+      <a href="{{ url_for('main.subjects') }}">Предмети</a>
+      <a href="{{ url_for('main.tasks') }}">Задачи</a>
+      <a href="{{ url_for('main.exams') }}">Изпити</a>
+      <a href="{{ url_for('main.schedule') }}">График</a>
+      <hr>
+      <a href="{{ url_for('main.login') }}">Вход</a>
+      <a href="{{ url_for('main.register') }}">Регистрация</a>
+    </nav>
+    <main class="content">{% block content %}{% endblock %}</main>
+  </div>
+</body>
+</html>
