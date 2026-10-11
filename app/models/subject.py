@@ -1,4 +1,4 @@
-"""Initial Subject model. CRUD functionality is planned for later in week 1."""
+"""Subject database model; INSERT and filtered SELECT are implemented in week 1."""
 from datetime import datetime, timezone
 from app import db
 

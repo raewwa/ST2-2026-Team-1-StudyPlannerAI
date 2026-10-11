@@ -1,10 +1,11 @@
-"""HTTP controllers: rendering, validation, and subject creation (week 1, part 2)."""
+"""HTTP controllers: subject INSERT and filtered SELECT (week 1 complete)."""
 import hmac
 import secrets
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
 from app.models.subject import Subject
+from app.patterns.app_settings import AppSettings
 
 main_bp = Blueprint('main', __name__)
 
@@ -49,8 +50,42 @@ def dashboard():
     return render_template('dashboard.html', subject_count=db.session.query(Subject).count())
 
 
+def filtered_subjects(args):
+    """SELECT with Filter: combine case-insensitive name and semester filters.
+
+    Invalid GET filters produce a helpful message, not a server error.
+    SQLAlchemy parameters prevent SQL injection.
+    """
+    settings = AppSettings()
+    search = args.get('search', '').strip()
+    semester_raw = args.get('semester', '').strip()
+    errors = {}
+    if len(search) > settings.max_search_length:
+        errors['search'] = f'Търсенето не може да надвишава {settings.max_search_length} символа.'
+    semester = None
+    if semester_raw:
+        try:
+            semester = int(semester_raw)
+            if str(semester) != semester_raw or not settings.min_semester <= semester <= settings.max_semester:
+                raise ValueError
+        except ValueError:
+            errors['filter_semester'] = 'Избери валиден семестър от 1 до 12.'
+    query = db.session.query(Subject)
+    if not errors:
+        if search:
+            # `contains` escapes user-entered SQL wildcard characters.
+            query = query.filter(Subject.name.icontains(search, autoescape=True))
+        if semester is not None:
+            query = query.filter(Subject.semester == semester)
+    else:
+        # Never silently return unfiltered data for malformed filters.
+        query = query.filter(db.false())
+    return query.order_by(Subject.id.desc()).all(), {'search': search, 'semester': semester_raw}, errors
+
+
 @main_bp.route('/subjects', methods=['GET', 'POST'])
 def subjects():
+    filtered, filters, filter_errors = filtered_subjects(request.args)
     if request.method == 'POST':
         expected = session.get('_csrf_token', '')
         supplied = request.form.get('csrf_token', '')
@@ -58,8 +93,8 @@ def subjects():
             return 'Невалиден CSRF токен. Презаредете страницата.', 400
         values, errors = validate_subject(request.form)
         if errors:
-            return render_template('subjects.html', subjects=Subject.query.order_by(Subject.id.desc()).all(),
-                                   values=request.form, errors=errors), 422
+            return render_template('subjects.html', subjects=filtered, total_count=db.session.query(Subject).count(),
+                                   filters=filters, filter_errors=filter_errors, values=request.form, errors=errors), 422
         subject = Subject(**values)
         try:
             db.session.add(subject)
@@ -70,8 +105,8 @@ def subjects():
             return redirect(url_for('main.subjects'))
         flash('Предметът беше добавен успешно.', 'success')
         return redirect(url_for('main.subjects'))
-    return render_template('subjects.html', subjects=Subject.query.order_by(Subject.id.desc()).all(),
-                           values={}, errors={})
+    return render_template('subjects.html', subjects=filtered, total_count=db.session.query(Subject).count(),
+                           filters=filters, filter_errors=filter_errors, values={}, errors={})
 
 
 @main_bp.get('/tasks')
