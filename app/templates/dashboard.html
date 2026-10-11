@@ -1,24 +1,42 @@
 {% extends 'base.html' %}
 {% block title %}Табло · AI Study Planner{% endblock %}
 {% block content %}
-<section class="hero">
-    <p class="eyebrow">Добре дошли</p>
-    <h1>Организирай ученето си по-лесно.</h1>
-    <p>Тук ще следиш предмети, задачи, изпити и учебен график.</p><a class="btn"
-        href="{{ url_for('main.subjects') }}">Към предметите →</a>
+<section class="hero rounded-4 p-4 p-lg-5 mb-4 shadow-sm">
+  <p class="text-uppercase fw-semibold small mb-2 hero-eyebrow">Твоят учебен помощник</p>
+  <h1 class="display-6 fw-bold mb-3">Организирай ученето си по-лесно.</h1>
+  <p class="lead mb-4">Some msg here</p>
+  <a class="btn btn-light fw-semibold" href="{{ url_for('main.subjects') }}">Управление на предмети <i
+      class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
 </section>
-<div class="cards">
-    <article class="card">
-        <h2>Предмети</h2>
-        <p>To-do</p>
+<div class="row g-4">
+  <div class="col-12 col-md-4">
+    <article class="card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="feature-icon mb-3"><i class="bi bi-book" aria-hidden="true"></i></div>
+        <h2 class="h5 fw-bold">Предмети</h2>
+        <p class="text-secondary mb-3">Добавени предмети: <strong>{{ subject_count }}</strong></p><a
+          href="{{ url_for('main.subjects') }}" class="link-primary fw-semibold">Виж предметите <i
+            class="bi bi-arrow-right" aria-hidden="true"></i></a>
+      </div>
     </article>
-    <article class="card">
-        <h2>Задачи</h2>
-        <p>To-do</p>
+  </div>
+  <div class="col-12 col-md-4">
+    <article class="card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="feature-icon mb-3"><i class="bi bi-check2-square" aria-hidden="true"></i></div>
+        <h2 class="h5 fw-bold">Задачи</h2>
+        <p class="text-secondary">To-do</p>
+      </div>
     </article>
-    <article class="card">
-        <h2>Изпити</h2>
-        <p>To-do</p>
+  </div>
+  <div class="col-12 col-md-4">
+    <article class="card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="feature-icon mb-3"><i class="bi bi-calendar-event" aria-hidden="true"></i></div>
+        <h2 class="h5 fw-bold">Изпити</h2>
+        <p class="text-secondary">To-do</p>
+      </div>
     </article>
+  </div>
 </div>
 {% endblock %}

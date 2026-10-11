@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Предмети · AI Study Planner{% endblock %}
-{% block content %}<h1>Предмети</h1>
-<p class="muted">Страницата е създадена.</p>
-<div class="card">
-    <h2>Следваща стъпка</h2>
-    <p>To-do
-    </p>
-</div>{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4"><div><h1 class="h2 fw-bold mb-1">Предмети</h1><p class="text-secondary mb-0">Добавяй и преглеждай своите учебни предмети.</p></div><span class="badge count-badge rounded-pill px-3 py-2">Общо: {{ subjects|length }}</span></div>
+<div class="row g-4">
+  <div class="col-12 col-lg-5">
+    <section class="card border-0 shadow-sm"><div class="card-body p-4"><h2 class="h5 fw-bold mb-4"><i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Нов предмет</h2>
+      <form method="post" action="{{ url_for('main.subjects') }}" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3"><label for="name" class="form-label fw-semibold">Име на предмет <span class="text-danger">*</span></label><input id="name" name="name" type="text" maxlength="120" required class="form-control {% if errors.get('name') %}is-invalid{% endif %}" placeholder="Напр. Математика" value="{{ values.get('name', '') }}"><div class="invalid-feedback">{{ errors.get('name', '') }}</div></div>
+        <div class="mb-3"><label for="semester" class="form-label fw-semibold">Семестър</label><input id="semester" name="semester" type="number" min="1" max="12" step="1" class="form-control {% if errors.get('semester') %}is-invalid{% endif %}" placeholder="Напр. 3" value="{{ values.get('semester', '') }}"><div class="invalid-feedback">{{ errors.get('semester', '') }}</div></div>
+        <div class="mb-4"><label for="description" class="form-label fw-semibold">Описание</label><textarea id="description" name="description" maxlength="1000" rows="4" class="form-control {% if errors.get('description') %}is-invalid{% endif %}" placeholder="Кратко описание (по избор)">{{ values.get('description', '') }}</textarea><div class="invalid-feedback">{{ errors.get('description', '') }}</div></div>
+        <button class="btn btn-primary w-100 fw-semibold" type="submit"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Добави предмет</button>
+      </form>
+    </div></section>
+  </div>
+  <div class="col-12 col-lg-7"><section class="card border-0 shadow-sm"><div class="card-body p-4"><h2 class="h5 fw-bold mb-3"><i class="bi bi-collection me-2" aria-hidden="true"></i>Добавени предмети</h2>
+    {% if subjects %}
+      <div class="list-group list-group-flush">{% for subject in subjects %}<div class="list-group-item px-0 py-3"><div class="d-flex justify-content-between align-items-start gap-2"><div><h3 class="h6 fw-bold mb-1">{{ subject.name }}</h3>{% if subject.description %}<p class="text-secondary small mb-0">{{ subject.description }}</p>{% endif %}</div>{% if subject.semester %}<span class="badge count-badge text-nowrap">Сем. {{ subject.semester }}</span>{% endif %}</div></div>{% endfor %}</div>
+    {% else %}<div class="text-center py-5"><i class="bi bi-journal-plus empty-icon" aria-hidden="true"></i><p class="fw-semibold mt-3 mb-1">Все още няма добавени предмети.</p><p class="text-secondary small mb-0">Използвай формата, за да добавиш първия.</p></div>{% endif %}
+  </div></section></div>
+</div>
+{% endblock %}
