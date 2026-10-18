@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация · AI Study Planner{% endblock %}
+{% block content %}
+<section class="card auth-card p-4 p-md-5 w-100">
+  <div class="auth-icon mb-3"><i class="bi bi-person-plus" aria-hidden="true"></i></div>
+  <h1 class="h3 fw-bold">Създай профил</h1><p class="text-secondary mb-4">Организирай предметите и задачите си на едно място.</p>
+  <form method="post" action="{{ url_for('main.register') }}" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for field, label, type, maxlength in [('username','Потребителско име','text',80),('email','Email','email',255),('password','Парола','password',128),('confirm_password','Потвърди паролата','password',128)] %}
+    <div class="mb-3"><label class="form-label fw-semibold" for="{{ field }}">{{ label }}</label>
+      <input class="form-control {% if errors.get(field) %}is-invalid{% endif %}" id="{{ field }}" name="{{ field }}" type="{{ type }}" maxlength="{{ maxlength }}" {% if field == 'username' %}minlength="3" autocomplete="username"{% elif field == 'email' %}autocomplete="email"{% elif field == 'password' %}minlength="8" autocomplete="new-password"{% else %}minlength="8" autocomplete="new-password"{% endif %} value="{{ values.get(field,'') if type != 'password' else '' }}" required>
+      {% if errors.get(field) %}<div class="invalid-feedback">{{ errors[field] }}</div>{% endif %}
+    </div>{% endfor %}
+    <button class="btn btn-primary w-100 py-2" type="submit"><i class="bi bi-person-check me-2"></i>Регистрация</button>
+  </form>
+  <p class="small text-center mt-4 mb-0">Имаш профил? <a href="{{ url_for('main.login') }}">Влез тук</a></p>
+</section>
+{% endblock %}

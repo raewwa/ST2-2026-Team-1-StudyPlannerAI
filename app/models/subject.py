@@ -13,6 +13,7 @@ class Subject(db.Model):
     # Nullable for Week 1 legacy records; scoped ownership comes in Week 2 step 2.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True, index=True)
     owner = db.relationship('User', back_populates='subjects')
+    tasks = db.relationship('Task', back_populates='subject')
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):

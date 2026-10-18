@@ -73,3 +73,16 @@ body{min-height:100vh;background:#f2faff}
   outline: 3px solid #5fa8d3;
   outline-offset: 2px;
 }
+
+/* Week 2 auth cards and subtle page footer */
+.auth-card{max-width:520px;margin-inline:auto;border:1px solid #bee9e8;box-shadow:0 14px 38px rgba(27,73,101,.07)}
+.auth-icon{display:grid;place-items:center;width:54px;height:54px;border-radius:16px;background:#bee9e8;color:#1b4965;font-size:1.5rem}
+.app-footer{color:#1b4965;border-color:#bee9e8!important}
+.app-content{display:flex;flex-direction:column}.app-content>footer{margin-top:auto!important;padding-top:1.5rem}
+
+/* Week 2 / step 5: refined user identity card. */
+.profile-card{background:linear-gradient(140deg,#f1fbfd,#cae9ff);border:1px solid #bee9e8;color:#1b4965}
+.profile-avatar{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:14px;background:#1b4965;color:#fff;font-size:1.3rem;font-weight:800;box-shadow:0 5px 12px rgba(27,73,101,.14)}
+.profile-email{color:#4d758b}.profile-status{color:#286b77}.profile-status .bi{color:#268576}
+.profile-guest{background:#f0f9ff;border:1px solid #bee9e8}
+.profile-card .btn-outline-primary,.profile-guest .btn-outline-primary{--bs-btn-color:#1b4965;--bs-btn-border-color:#62b6cb;--bs-btn-hover-bg:#1b4965;--bs-btn-hover-border-color:#1b4965}

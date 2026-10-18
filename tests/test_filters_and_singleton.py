@@ -17,6 +17,16 @@ def client(tmp_path):
         db.engine.dispose()
 
 
+def authenticate(client):
+    page = client.get('/register')
+    token = re.search(rb'name="csrf_token" value="([^"]+)"', page.data).group(1).decode()
+    response = client.post('/register', data={
+        'csrf_token': token, 'username': 'filters_student',
+        'email': 'filters@example.com', 'password': 'password123',
+        'confirm_password': 'password123'})
+    assert response.status_code == 302
+
+
 def add_subject(client, name, semester):
     response = client.get('/subjects')
     token = re.search(rb'name="csrf_token" value="([^"]+)"', response.data).group(1).decode()
@@ -26,11 +36,12 @@ def add_subject(client, name, semester):
 
 
 def test_filter_by_name_semester_and_combined(client):
+    authenticate(client)
     add_subject(client, 'Математика', 1)
     add_subject(client, 'Математика II', 2)
     add_subject(client, 'Физика', 2)
-    assert len(client.get('/subjects?search=математика').data.split('class="list-group-item')) == 3
-    assert len(client.get('/subjects?semester=2').data.split('class="list-group-item')) == 3
+    assert 'Намерени: 2' in client.get('/subjects?search=математика').get_data(as_text=True)
+    assert 'Намерени: 2' in client.get('/subjects?semester=2').get_data(as_text=True)
     response = client.get('/subjects?search=МАТЕМАТИКА&semester=2')
     assert response.status_code == 200
     assert 'Математика II'.encode() in response.data
@@ -39,6 +50,7 @@ def test_filter_by_name_semester_and_combined(client):
 
 
 def test_empty_results_and_bad_filters(client):
+    authenticate(client)
     add_subject(client, 'История', 1)
     response = client.get('/subjects?search=несъществуващ')
     assert 'Няма предмети по избраните критерии.'.encode() in response.data
@@ -50,6 +62,7 @@ def test_empty_results_and_bad_filters(client):
 
 
 def test_literal_wildcards(client):
+    authenticate(client)
     add_subject(client, '100% Математика', 1)
     add_subject(client, 'Физика', 2)
     response = client.get('/subjects?search=%25')

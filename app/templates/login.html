@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Вход · AI Study Planner{% endblock %}
+{% block content %}
+<section class="card auth-card p-4 p-md-5 w-100">
+  <div class="auth-icon mb-3"><i class="bi bi-shield-lock" aria-hidden="true"></i></div>
+  <h1 class="h3 fw-bold">Добре дошъл отново</h1><p class="text-secondary mb-4">Влез, за да продължиш с учебния си план.</p>
+  {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+  <form method="post" action="{{ url_for('main.login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3"><label class="form-label fw-semibold" for="email">Email</label><input class="form-control" type="email" name="email" id="email" value="{{ email }}" autocomplete="email" required></div>
+    <div class="mb-4"><label class="form-label fw-semibold" for="password">Парола</label><input class="form-control" type="password" name="password" id="password" autocomplete="current-password" required></div>
+    <button class="btn btn-primary w-100 py-2" type="submit"><i class="bi bi-box-arrow-in-right me-2"></i>Вход</button>
+  </form>
+  <p class="small text-center mt-4 mb-0">Нямаш профил? <a href="{{ url_for('main.register') }}">Регистрирай се</a></p>
+</section>
+{% endblock %}

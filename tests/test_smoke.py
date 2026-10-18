@@ -12,7 +12,16 @@ def client(tmp_path):
         db.engine.dispose()
 
 
-@pytest.mark.parametrize('route', ['/', '/subjects', '/tasks', '/exams', '/schedule', '/login', '/register'])
+def register_test_user(client):
+    import re
+    page = client.get('/register')
+    token = re.search(rb'name="csrf_token" value="([^"]+)"', page.data).group(1).decode()
+    assert client.post('/register', data={'csrf_token': token, 'username': 'smoke_user',
+        'email': 'smoke@example.com', 'password': 'password123',
+        'confirm_password': 'password123'}).status_code == 302
+
+
+@pytest.mark.parametrize('route', ['/login', '/register'])
 def test_pages_load(client, route):
     response = client.get(route)
     assert response.status_code == 200
@@ -27,6 +36,7 @@ def test_subjects_table_created(client):
 
 
 def test_subject_insert_and_dashboard_count(client):
+    register_test_user(client)
     page = client.get('/subjects')
     import re
     token = re.search(rb'name="csrf_token" value="([^"]+)"', page.data).group(1).decode()
@@ -44,6 +54,7 @@ def test_subject_insert_and_dashboard_count(client):
 
 
 def test_subject_validation_and_csrf(client):
+    register_test_user(client)
     assert client.post('/subjects', data={'name': 'X'}).status_code == 400
     page = client.get('/subjects')
     import re
@@ -58,6 +69,13 @@ def test_subject_validation_and_csrf(client):
 
 
 def test_dashboard_uses_bootstrap_icons_not_emoji(client):
+    register_test_user(client)
     response = client.get('/')
     assert b'bootstrap-icons' in response.data
     assert b'bi bi-book' in response.data
+
+
+def test_tasks_requires_login(client):
+    response = client.get('/tasks')
+    assert response.status_code == 302
+    assert '/login' in response.headers['Location']

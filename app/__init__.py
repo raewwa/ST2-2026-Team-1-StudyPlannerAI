@@ -4,7 +4,7 @@ from pathlib import Path
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import inspect, text
+from sqlalchemy import inspect, text, event
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -57,9 +57,20 @@ def create_app(test_config=None):
     login_manager.init_app(app)
     from app.models.user import User  # noqa: F401
     from app.models.subject import Subject  # noqa: F401
+    from app.models.task import Task  # noqa: F401
     from app.controllers.main_controller import main_bp
     app.register_blueprint(main_bp)
     with app.app_context():
+        if db.engine.dialect.name == 'sqlite':
+            # SQLite lower()/LIKE are ASCII-only. Register Unicode casefold for
+            # Bulgarian subject searches and enforce FK constraints on connections.
+            def configure_sqlite(connection, connection_record):
+                connection.create_function('unicode_casefold', 1,
+                                           lambda value: value.casefold() if value is not None else None)
+                cursor = connection.cursor()
+                cursor.execute('PRAGMA foreign_keys=ON')
+                cursor.close()
+            event.listen(db.engine, 'connect', configure_sqlite)
         # Create users before upgrading existing subjects for their FK.
         User.__table__.create(bind=db.engine, checkfirst=True)
         upgrade_legacy_subjects_schema()

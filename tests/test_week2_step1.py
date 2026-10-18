@@ -64,8 +64,8 @@ def test_existing_week1_subjects_survive_upgrade(tmp_path):
 
 def test_active_nav_style_and_existing_pages(app):
     with app.test_client() as client:
-        assert client.get('/').status_code == 200
-        assert client.get('/subjects').status_code == 200
+        assert client.get('/').status_code == 302
+        assert client.get('/subjects').status_code == 302
     from pathlib import Path
     css = (Path(__file__).resolve().parents[1] / 'app/static/css/style.css').read_text()
     assert 'background-color: #bee9e8' in css
