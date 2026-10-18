@@ -1,1 +1,1 @@
-За updating test2
+За updating
