@@ -2,7 +2,6 @@
 :root{--bs-primary:#1b4965;--bs-primary-rgb:27,73,101;--bs-link-color:#1b4965;--bs-link-hover-color:#14607f;--bs-body-color:#1b4965;--bs-body-bg:#f2faff;--bs-border-color:#bee9e8}
 body{min-height:100vh;background:#f2faff}
 .app-navbar{background:#1b4965;min-height:68px}
-.app-milestone{background:#62b6cb;color:#12394e;font-weight:600}
 /* Responsive sidebar: permanent on desktop, Bootstrap offcanvas on mobile. */
 .app-layout{display:flex;min-height:calc(100vh - 68px)}
 .brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#62b6cb;color:#1b4965;font-size:1.25rem}
@@ -17,9 +16,6 @@ body{min-height:100vh;background:#f2faff}
 .sidebar-link:hover{background:#cae9ff;color:#1b4965;transform:translateX(2px)}
 .sidebar-link.active,.sidebar-link.active:hover{background:#1b4965;color:#fff;box-shadow:0 5px 12px rgba(27,73,101,.16)}
 .sidebar-link.active .bi{color:#bee9e8}
-.sidebar-progress{background:#f0f9ff;border:1px solid #bee9e8;color:#1b4965}
-.sidebar-progress .progress{height:7px;background:#cae9ff}
-.sidebar-progress .progress-bar{background:#62b6cb}
 .sidebar-footer{color:#66899b}
 .app-content{max-width:1400px;min-width:0;flex:1}
 @media(max-width:991.98px){.app-layout{display:block}.app-sidebar{border-right:0;box-shadow:none}.app-sidebar .offcanvas-body{min-height:0;overflow-y:auto}.app-content{max-width:100%}}
@@ -86,3 +82,14 @@ body{min-height:100vh;background:#f2faff}
 .profile-email{color:#4d758b}.profile-status{color:#286b77}.profile-status .bi{color:#268576}
 .profile-guest{background:#f0f9ff;border:1px solid #bee9e8}
 .profile-card .btn-outline-primary,.profile-guest .btn-outline-primary{--bs-btn-color:#1b4965;--bs-btn-border-color:#62b6cb;--bs-btn-hover-bg:#1b4965;--bs-btn-hover-border-color:#1b4965}
+
+/* Week 3 / Step 2: readable exam status badges with extra right spacing. */
+.exam-status-badge{margin-inline-end:1rem!important;padding:.5rem .8rem;font-weight:700;letter-spacing:.01em}
+.exam-status-upcoming{background:#fff0c2;color:#795200;border:1px solid #e9c469}
+.exam-status-cancelled{background:#ffe1e1;color:#9c2736;border:1px solid #efa6ac}
+.exam-status-completed{background:#d8f4e7;color:#176846;border:1px solid #8bd2ad}
+.study-day{border:1px solid #d9eaf2;border-radius:1rem;background:#fff;height:100%}
+.study-day-heading{background:#edf8fc;border-radius:1rem 1rem 0 0;color:#1b4965}
+.study-session{border-left:4px solid #62b6cb;background:#f7fbfe;border-radius:.6rem}
+.study-session.is-completed{border-left-color:#27835b}
+.study-session.is-cancelled{border-left-color:#c75762;opacity:.8}

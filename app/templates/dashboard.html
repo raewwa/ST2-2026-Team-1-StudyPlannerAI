@@ -5,41 +5,11 @@
   <p class="text-uppercase fw-semibold small mb-2 hero-eyebrow">Твоят учебен помощник</p>
   <h1 class="display-6 fw-bold mb-3">Организирай ученето си по-лесно.</h1>
   <p class="lead mb-4">Следи предметите, задачите и напредъка си на едно място.</p>
-  <a class="btn btn-light fw-semibold" href="{{ url_for('main.subjects') }}">Управление на предмети <i
-      class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+  <a class="btn btn-light fw-semibold" href="{{ url_for('main.subjects') }}">Управление на предмети <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
 </section>
 <div class="row g-4">
-  <div class="col-12 col-md-4">
-    <article class="card h-100 border-0 shadow-sm">
-      <div class="card-body p-4">
-        <div class="feature-icon mb-3"><i class="bi bi-book" aria-hidden="true"></i></div>
-        <h2 class="h5 fw-bold">Предмети</h2>
-        <p class="text-secondary mb-3">Добавени предмети: <strong>{{ subject_count }}</strong></p><a
-          href="{{ url_for('main.subjects') }}" class="link-primary fw-semibold">Виж предметите <i
-            class="bi bi-arrow-right" aria-hidden="true"></i></a>
-      </div>
-    </article>
-  </div>
-  <div class="col-12 col-md-4">
-    <article class="card h-100 border-0 shadow-sm">
-      <div class="card-body p-4">
-        <div class="feature-icon mb-3"><i class="bi bi-check2-square" aria-hidden="true"></i></div>
-        <h2 class="h5 fw-bold">Задачи</h2>
-        <p class="text-secondary mb-2">Общо задачи: <strong>{{ task_count }}</strong></p>
-        <p class="text-secondary small mb-3">За изпълнение: {{ pending_count }} · Завършени: {{ completed_count }}</p><a
-          href="{{ url_for('main.tasks') }}" class="link-primary fw-semibold">Виж задачите <i class="bi bi-arrow-right"
-            aria-hidden="true"></i></a>
-      </div>
-    </article>
-  </div>
-  <div class="col-12 col-md-4">
-    <article class="card h-100 border-0 shadow-sm">
-      <div class="card-body p-4">
-        <div class="feature-icon mb-3"><i class="bi bi-calendar-event" aria-hidden="true"></i></div>
-        <h2 class="h5 fw-bold">Изпити</h2>
-        <p class="text-secondary">To-do</p>
-      </div>
-    </article>
-  </div>
+  <div class="col-12 col-md-4"><article class="card h-100 border-0 shadow-sm"><div class="card-body p-4"><div class="feature-icon mb-3"><i class="bi bi-book" aria-hidden="true"></i></div><h2 class="h5 fw-bold">Предмети</h2><p class="text-secondary mb-3">Добавени предмети: <strong>{{ subject_count }}</strong></p><a href="{{ url_for('main.subjects') }}" class="link-primary fw-semibold">Виж предметите <i class="bi bi-arrow-right" aria-hidden="true"></i></a></div></article></div>
+  <div class="col-12 col-md-4"><article class="card h-100 border-0 shadow-sm"><div class="card-body p-4"><div class="feature-icon mb-3"><i class="bi bi-check2-square" aria-hidden="true"></i></div><h2 class="h5 fw-bold">Задачи</h2><p class="text-secondary mb-2">Общо задачи: <strong>{{ task_count }}</strong></p><p class="text-secondary small mb-3">За изпълнение: {{ pending_count }} · Завършени: {{ completed_count }}</p><a href="{{ url_for('main.tasks') }}" class="link-primary fw-semibold">Виж задачите <i class="bi bi-arrow-right" aria-hidden="true"></i></a></div></article></div>
+  <div class="col-12 col-md-4"><article class="card h-100 border-0 shadow-sm"><div class="card-body p-4"><div class="feature-icon mb-3"><i class="bi bi-calendar-event" aria-hidden="true"></i></div><h2 class="h5 fw-bold">Изпити</h2><p class="text-secondary">Функционалността предстои през Седмица 3.</p></div></article></div>
 </div>
 {% endblock %}

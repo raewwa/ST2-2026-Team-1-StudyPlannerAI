@@ -58,6 +58,8 @@ def create_app(test_config=None):
     from app.models.user import User  # noqa: F401
     from app.models.subject import Subject  # noqa: F401
     from app.models.task import Task  # noqa: F401
+    from app.models.exam import Exam  # noqa: F401
+    from app.models.study_session import StudySession  # noqa: F401
     from app.controllers.main_controller import main_bp
     app.register_blueprint(main_bp)
     with app.app_context():

@@ -14,6 +14,8 @@ class Subject(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True, index=True)
     owner = db.relationship('User', back_populates='subjects')
     tasks = db.relationship('Task', back_populates='subject')
+    exams = db.relationship('Exam', back_populates='subject')
+    study_sessions = db.relationship('StudySession', back_populates='subject')
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):

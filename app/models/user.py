@@ -15,6 +15,8 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     subjects = db.relationship('Subject', back_populates='owner', lazy='select')
     tasks = db.relationship('Task', back_populates='owner', lazy='select')
+    exams = db.relationship('Exam', back_populates='owner', lazy='select')
+    study_sessions = db.relationship('StudySession', back_populates='owner', lazy='select')
 
     def set_password(self, password):
         """Store a salted one-way hash, never the plaintext password."""
