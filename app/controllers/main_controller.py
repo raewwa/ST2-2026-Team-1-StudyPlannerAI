@@ -61,11 +61,44 @@ def validate_subject(form):
 @main_bp.get('/')
 @login_required
 def dashboard():
-    task_query = TaskRepository(current_user.id).query()
-    return render_template('dashboard.html', subject_count=SubjectRepository(current_user.id).count(),
-                           task_count=task_query.count(),
-                           pending_count=task_query.filter(Task.status != 'completed').count(),
-                           completed_count=task_query.filter_by(status='completed').count())
+    """User-scoped dashboard: all counts and events come from the database."""
+    today = date.today()
+    user_id = current_user.id
+    task_query = TaskRepository(user_id).query()
+    exam_query = ExamRepository(user_id).query()
+    session_query = StudySessionRepository(user_id).query()
+    task_count = task_query.count()
+    completed_count = task_query.filter_by(status='completed').count()
+    pending_count = task_count - completed_count
+    upcoming_exams = (exam_query.filter(Exam.status == 'upcoming', Exam.exam_date >= today)
+                      .order_by(Exam.exam_date, Exam.exam_time).limit(5).all())
+    upcoming_tasks = (task_query.filter(Task.status != 'completed', Task.due_date >= today)
+                      .order_by(Task.due_date, Task.id).limit(5).all())
+    upcoming_sessions = (session_query.filter(StudySession.status == 'planned',
+                                               StudySession.session_date >= today)
+                         .order_by(StudySession.session_date, StudySession.start_time).limit(5).all())
+    week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+    week_sessions = session_query.filter(StudySession.session_date >= week_start,
+                                         StudySession.session_date <= week_end,
+                                         StudySession.status != 'cancelled').all()
+    study_minutes = sum((item.end_time.hour * 60 + item.end_time.minute) -
+                        (item.start_time.hour * 60 + item.start_time.minute)
+                        for item in week_sessions)
+    events = ([{'kind': 'Изпит', 'title': e.title, 'when': e.exam_date,
+                'time': e.exam_time, 'url': url_for('main.exams')} for e in upcoming_exams] +
+              [{'kind': 'Задача', 'title': t.title, 'when': t.due_date,
+                'time': None, 'url': url_for('main.tasks')} for t in upcoming_tasks] +
+              [{'kind': 'Учебна сесия', 'title': x.title, 'when': x.session_date,
+                'time': x.start_time, 'url': url_for('main.schedule')} for x in upcoming_sessions])
+    events.sort(key=lambda event: (event['when'], event['time'] or time.min))
+    return render_template('dashboard.html',
+                           subject_count=SubjectRepository(user_id).count(),
+                           task_count=task_count, pending_count=pending_count,
+                           completed_count=completed_count,
+                           completion_percent=round(completed_count * 100 / task_count) if task_count else 0,
+                           upcoming_exam_count=exam_query.filter(Exam.status == 'upcoming', Exam.exam_date >= today).count(),
+                           study_minutes=study_minutes, events=events[:8])
 
 
 def owned_subjects_query():
@@ -205,8 +238,12 @@ def tasks():
 
 def task_filter_values(args):
     """Validate optional GET filters; return values and field errors."""
-    values = {key: args.get(key, '').strip() for key in ('status', 'priority', 'subject_id')}
+    values = {key: args.get(key, '').strip() for key in ('status', 'priority', 'subject_id', 'search', 'sort')}
     errors = {}
+    if len(values['search']) > 120:
+        errors['search'] = 'Търсенето не може да надвишава 120 символа.'
+    if values['sort'] and values['sort'] not in ('newest', 'oldest', 'due_asc', 'due_desc', 'priority'):
+        errors['sort'] = 'Невалидно сортиране.'
     if values['status'] and values['status'] not in ('pending', 'in_progress', 'completed'):
         errors['status'] = 'Невалиден статус.'
     if values['priority'] and values['priority'] not in ('low', 'medium', 'high'):
@@ -340,6 +377,39 @@ def exam_subjects():
     return SubjectRepository(current_user.id).ordered()
 
 
+def filtered_exams(args):
+    """Owner-scoped exam search/filter/sort; allowlist all query parameters."""
+    values = {key: args.get(key, '').strip() for key in ('search', 'status', 'subject_id', 'sort')}
+    errors = {}
+    if len(values['search']) > 120:
+        errors['search'] = 'Търсенето не може да надвишава 120 символа.'
+    if values['status'] and values['status'] not in ('upcoming', 'completed', 'cancelled'):
+        errors['status'] = 'Невалиден статус.'
+    if values['sort'] and values['sort'] not in ('date_asc', 'date_desc', 'title'):
+        errors['sort'] = 'Невалидно сортиране.'
+    if values['subject_id']:
+        try:
+            sid = int(values['subject_id'])
+            if sid < 1 or str(sid) != values['subject_id'] or not SubjectRepository(current_user.id).exists(sid):
+                raise ValueError
+        except ValueError:
+            errors['subject_id'] = 'Невалиден предмет.'
+    if errors:
+        return [], values, errors
+    query = ExamRepository(current_user.id).query()
+    if values['search']:
+        escaped = values['search'].replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
+        query = query.filter(Exam.title.ilike(f'%{escaped}%', escape='\\'))
+    if values['status']:
+        query = query.filter(Exam.status == values['status'])
+    if values['subject_id']:
+        query = query.filter(Exam.subject_id == int(values['subject_id']))
+    order = {'date_asc': (Exam.exam_date.asc(), Exam.exam_time.asc()),
+             'date_desc': (Exam.exam_date.desc(), Exam.exam_time.desc()),
+             'title': (Exam.title.asc(), Exam.id.asc())}
+    return query.order_by(*order.get(values['sort'], order['date_asc'])).all(), values, errors
+
+
 @main_bp.route('/exams', methods=['GET', 'POST'])
 @login_required
 def exams():
@@ -348,8 +418,8 @@ def exams():
             return 'Невалиден CSRF токен.', 400
         values, errors = validate_exam(request.form)
         if errors:
-            items = ExamRepository(current_user.id).ordered()
-            return render_template('exams.html', exams=items, subjects=exam_subjects(), values=request.form, errors=errors), 422
+            items, filters, filter_errors = filtered_exams(request.args)
+            return render_template('exams.html', exams=items, subjects=exam_subjects(), values=request.form, errors=errors, filters=filters, filter_errors=filter_errors), 422
         try:
             ExamRepository(current_user.id).add(**values)
         except SQLAlchemyError:
@@ -358,8 +428,8 @@ def exams():
             return redirect(url_for('main.exams'))
         flash('Изпитът е добавен успешно.', 'success')
         return redirect(url_for('main.exams'))
-    items = ExamRepository(current_user.id).ordered()
-    return render_template('exams.html', exams=items, subjects=exam_subjects(), values={}, errors={})
+    items, filters, filter_errors = filtered_exams(request.args)
+    return render_template('exams.html', exams=items, subjects=exam_subjects(), values={}, errors={}, filters=filters, filter_errors=filter_errors)
 
 
 @main_bp.route('/exams/<int:exam_id>/edit', methods=['GET', 'POST'])
@@ -496,11 +566,33 @@ def schedule():
 
 def render_schedule(monday, sunday, subjects, values, errors):
     items = StudySessionRepository(current_user.id).in_week(monday, sunday)
+    filters = {key: request.args.get(key, '').strip() for key in ('status', 'subject_id', 'sort')}
+    filter_errors = {}
+    if filters['status'] and filters['status'] not in ('planned', 'completed', 'cancelled'):
+        filter_errors['status'] = 'Невалиден статус.'
+    if filters['sort'] and filters['sort'] not in ('time_asc', 'time_desc'):
+        filter_errors['sort'] = 'Невалидно сортиране.'
+    if filters['subject_id']:
+        try:
+            sid = int(filters['subject_id'])
+            if sid < 1 or str(sid) != filters['subject_id'] or not SubjectRepository(current_user.id).exists(sid):
+                raise ValueError
+        except ValueError:
+            filter_errors['subject_id'] = 'Невалиден предмет.'
+    if filter_errors:
+        items = []
+    else:
+        if filters['status']:
+            items = [item for item in items if item.status == filters['status']]
+        if filters['subject_id']:
+            items = [item for item in items if item.subject_id == int(filters['subject_id'])]
+        if filters['sort'] == 'time_desc':
+            items = sorted(items, key=lambda item: (item.session_date, item.start_time), reverse=True)
     days = [(monday + timedelta(days=i), []) for i in range(7)]
     for item in items:
         days[(item.session_date - monday).days][1].append(item)
     return render_template('schedule.html', days=days, subjects=subjects, values=values,
-                           errors=errors, monday=monday, sunday=sunday,
+                           errors=errors, filters=filters, filter_errors=filter_errors, monday=monday, sunday=sunday,
                            previous_week=(monday - timedelta(days=7)).isoformat(),
                            next_week=(monday + timedelta(days=7)).isoformat())
 

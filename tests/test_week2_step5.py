@@ -42,7 +42,8 @@ def test_public_pages_and_profile_card(client):
     assert 'profile-card' in html
     assert 'maria@example.com' in html
     assert 'Изход от профила' in html
-    assert 'Седмица 2 · Завършена' in html
+    assert 'Седмица 2 · Завършена' not in html
+    assert 'Напредък по проекта' not in html
 
 
 def test_dashboard_counts_are_user_scoped(client):
@@ -58,7 +59,8 @@ def test_dashboard_counts_are_user_scoped(client):
     assert register(client, 'student2').status_code == 302
     html = client.get('/').get_data(as_text=True)
     assert 'За изпълнение: 0' in html
-    assert 'Добавени предмети: <strong>0</strong>' in html
+    assert 'Предмети' in html
+    assert 'Общо задачи:' in html
     with client.application.app_context():
         assert Subject.query.count() == 1
         assert Task.query.count() == 1

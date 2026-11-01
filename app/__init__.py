@@ -49,9 +49,25 @@ def create_app(test_config=None):
         SECRET_KEY=os.getenv('SECRET_KEY', 'dev-only-change-me'),
         SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL', 'sqlite:///study_planner.db'),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+        MAX_CONTENT_LENGTH=1024 * 1024,  # Reject oversized form submissions.
+
     )
     if test_config:
         app.config.update(test_config)
+
+    # Deployment guard: do not accidentally expose the development secret in production.
+    if not app.config.get('TESTING') and os.getenv('FLASK_ENV') == 'production':
+        if app.config['SECRET_KEY'] == 'dev-only-change-me':
+            raise RuntimeError('Set a strong SECRET_KEY before production deployment.')
+
+    @app.after_request
+    def security_headers(response):
+        response.headers.setdefault('X-Content-Type-Options', 'nosniff')
+        response.headers.setdefault('X-Frame-Options', 'DENY')
+        response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
+        return response
 
     db.init_app(app)
     login_manager.init_app(app)

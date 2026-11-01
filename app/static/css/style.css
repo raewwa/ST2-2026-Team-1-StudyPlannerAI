@@ -93,3 +93,18 @@ body{min-height:100vh;background:#f2faff}
 .study-session{border-left:4px solid #62b6cb;background:#f7fbfe;border-radius:.6rem}
 .study-session.is-completed{border-left-color:#27835b}
 .study-session.is-cancelled{border-left-color:#c75762;opacity:.8}
+
+/* Week 4: semantic schedule actions, accessible focus and hover states. */
+.btn-schedule-nav { background: #e6f3fa; color: #1b4965; border: 1px solid #8ab9d3; }
+.btn-schedule-nav:hover, .btn-schedule-nav:focus-visible { background: #cae9ff; color: #103750; border-color: #1b4965; }
+.btn-plan-study { background: #287d78; color: white; border: 1px solid #287d78; }
+.btn-plan-study:hover, .btn-plan-study:focus-visible { background: #1c615d; color: white; border-color: #1c615d; }
+.btn-schedule-add { background: #1b4965; color: white; border: 1px solid #1b4965; }
+.btn-schedule-add:hover, .btn-schedule-add:focus-visible { background: #103750; color: white; border-color: #103750; }
+.btn-schedule-edit { background: #5fa8d3; color: #102f44; border: 1px solid #367da7; }
+.btn-schedule-edit:hover, .btn-schedule-edit:focus-visible { background: #367da7; color: white; }
+.btn-schedule-delete { background: #b74451; color: white; border: 1px solid #b74451; }
+.btn-schedule-delete:hover, .btn-schedule-delete:focus-visible { background: #8f2e3b; color: white; }
+.stat-card { color: #1b4965; transition: transform .15s ease, box-shadow .15s ease; }
+.stat-card:hover { transform: translateY(-2px); }
+.dashboard-progress { background: #287d78; }
