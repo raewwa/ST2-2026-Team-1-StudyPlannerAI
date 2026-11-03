@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="bg">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,27 +11,29 @@
 <body>
   <header class="navbar app-navbar sticky-top shadow-sm" data-bs-theme="dark">
     <div class="container-fluid px-3 px-lg-4 gap-2">
-      <button class="btn btn-outline-light d-lg-none border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Отвори страничното меню"><i class="bi bi-list fs-4" aria-hidden="true"></i></button>
+      <button class="btn btn-outline-light d-lg-none border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Open sidebar"><i class="bi bi-list fs-4" aria-hidden="true"></i></button>
       <a class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0" href="{{ url_for('main.dashboard') }}"><span class="brand-mark"><i class="bi bi-mortarboard-fill" aria-hidden="true"></i></span><span>AI Study Planner</span></a>
     </div>
   </header>
   <div class="app-layout">
     <aside class="offcanvas-lg offcanvas-start app-sidebar" tabindex="-1" id="appSidebar" aria-labelledby="sidebarTitle">
-      <div class="offcanvas-header d-lg-none border-bottom"><h2 class="offcanvas-title h6 fw-bold mb-0" id="sidebarTitle">Навигация</h2><button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Затвори"></button></div>
+      <div class="offcanvas-header d-lg-none border-bottom"><h2 class="offcanvas-title h6 fw-bold mb-0" id="sidebarTitle">Navigation</h2><button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Close"></button></div>
       <div class="offcanvas-body d-flex flex-column p-3 p-lg-4">
-        <div class="sidebar-intro rounded-4 p-3 mb-4"><div class="small fw-semibold text-uppercase sidebar-kicker mb-1">Работно пространство</div><div class="fw-bold">Моят учебен план</div><div class="small mt-1 sidebar-intro-subtitle">Всичко за ученето на едно място</div></div>
-        <nav aria-label="Основна навигация" class="w-100">
-          <div class="sidebar-label mb-2 px-3">ОСНОВНО МЕНЮ</div>
+        <div class="sidebar-intro rounded-4 p-3 mb-4"><div class="small fw-semibold text-uppercase sidebar-kicker mb-1">Workspace</div><div class="fw-bold">My Study Planner</div><div class="small mt-1 sidebar-intro-subtitle">Everything for studying in one place</div></div>
+        <nav aria-label="Main navigation" class="w-100">
+          <div class="sidebar-label mb-2 px-3">MAIN MENU</div>
           <div class="nav nav-pills flex-column gap-1">
-            <a class="nav-link sidebar-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" {% if request.endpoint == 'main.dashboard' %}aria-current="page"{% endif %} href="{{ url_for('main.dashboard') }}"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i><span>Табло</span></a>
-            <a class="nav-link sidebar-link {% if request.endpoint == 'main.subjects' %}active{% endif %}" {% if request.endpoint == 'main.subjects' %}aria-current="page"{% endif %} href="{{ url_for('main.subjects') }}"><i class="bi bi-journals" aria-hidden="true"></i><span>Предмети</span></a>
-            <a class="nav-link sidebar-link {% if request.endpoint == 'main.tasks' %}active{% endif %}" {% if request.endpoint == 'main.tasks' %}aria-current="page"{% endif %} href="{{ url_for('main.tasks') }}"><i class="bi bi-check2-square" aria-hidden="true"></i><span>Задачи</span></a>
-            <a class="nav-link sidebar-link {% if request.endpoint == 'main.exams' %}active{% endif %}" {% if request.endpoint == 'main.exams' %}aria-current="page"{% endif %} href="{{ url_for('main.exams') }}"><i class="bi bi-calendar2-check" aria-hidden="true"></i><span>Изпити</span></a>
-            <a class="nav-link sidebar-link {% if request.endpoint == 'main.schedule' %}active{% endif %}" {% if request.endpoint == 'main.schedule' %}aria-current="page"{% endif %} href="{{ url_for('main.schedule') }}"><i class="bi bi-calendar-week" aria-hidden="true"></i><span>График</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" {% if request.endpoint == 'main.dashboard' %}aria-current="page"{% endif %} href="{{ url_for('main.dashboard') }}"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i><span>Dashboard</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.subjects' %}active{% endif %}" {% if request.endpoint == 'main.subjects' %}aria-current="page"{% endif %} href="{{ url_for('main.subjects') }}"><i class="bi bi-journals" aria-hidden="true"></i><span>Subjects</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.tasks' %}active{% endif %}" {% if request.endpoint == 'main.tasks' %}aria-current="page"{% endif %} href="{{ url_for('main.tasks') }}"><i class="bi bi-check2-square" aria-hidden="true"></i><span>Tasks</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.exams' %}active{% endif %}" {% if request.endpoint == 'main.exams' %}aria-current="page"{% endif %} href="{{ url_for('main.exams') }}"><i class="bi bi-calendar2-check" aria-hidden="true"></i><span>Exams</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.schedule' %}active{% endif %}" {% if request.endpoint == 'main.schedule' %}aria-current="page"{% endif %} href="{{ url_for('main.schedule') }}"><i class="bi bi-calendar-week" aria-hidden="true"></i><span>Schedule</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.ai_advice' %}active{% endif %}" href="{{ url_for('main.ai_advice') }}"><i class="bi bi-stars" aria-hidden="true"></i><span>AI Advice</span></a>
+            <a class="nav-link sidebar-link {% if request.endpoint == 'main.ai_plan' %}active{% endif %}" href="{{ url_for('main.ai_plan') }}"><i class="bi bi-calendar2-check" aria-hidden="true"></i><span>AI Study Plan</span></a>
           </div>
-          <div class="sidebar-label mt-4 mb-2 px-3">МОЯТ ПРОФИЛ</div>
+          <div class="sidebar-label mt-4 mb-2 px-3">MY PROFILE</div>
           {% if current_user.is_authenticated %}
-          <section class="profile-card p-3 rounded-4" aria-label="Влязъл потребител">
+          <section class="profile-card p-3 rounded-4" aria-label="Signed-in user">
             <div class="d-flex align-items-center gap-3 mb-3">
               <div class="profile-avatar" aria-hidden="true">{{ current_user.username[:1]|upper }}</div>
               <div class="flex-grow-1 overflow-hidden">
@@ -39,17 +41,17 @@
                 <div class="profile-email small text-truncate" title="{{ current_user.email }}">{{ current_user.email }}</div>
               </div>
             </div>
-            <div class="profile-status small mb-3"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i> Активен профил</div>
+            <div class="profile-status small mb-3"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i> Active account</div>
             <form method="post" action="{{ url_for('main.logout') }}">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <button class="btn btn-outline-primary btn-sm w-100 fw-semibold" type="submit"><i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Изход от профила</button>
+              <button class="btn btn-outline-primary btn-sm w-100 fw-semibold" type="submit"><i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Sign out</button>
             </form>
           </section>
           {% else %}
           <div class="profile-guest p-3 rounded-4">
-            <p class="small mb-3">Влез в профила си, за да управляваш учебния си план.</p>
-            <a class="btn btn-primary btn-sm w-100 mb-2" href="{{ url_for('main.login') }}">Вход</a>
-            <a class="btn btn-outline-primary btn-sm w-100" href="{{ url_for('main.register') }}">Регистрация</a>
+            <p class="small mb-3">Sign in to manage your study plan.</p>
+            <a class="btn btn-primary btn-sm w-100 mb-2" href="{{ url_for('main.login') }}">Sign in</a>
+            <a class="btn btn-outline-primary btn-sm w-100" href="{{ url_for('main.register') }}">Register</a>
           </div>
           {% endif %}
         </nav>
@@ -58,13 +60,13 @@
     </aside>
     <main class="app-content container-fluid py-4 py-lg-5 px-3 px-lg-5" id="main-content">
       {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button></div>{% endfor %}
+        {% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endfor %}
       {% endwith %}
       {% block content %}{% endblock %}
-      <footer class="app-footer mt-5 pt-4 border-top" aria-label="Информация за проекта">
+      <footer class="app-footer mt-5 pt-4 border-top" aria-label="Project information">
         <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 small">
           <span><i class="bi bi-mortarboard me-2" aria-hidden="true"></i><strong>AI Study Planner</strong> <span class="text-muted">· ST2 2026</span></span>
-          <span class="text-muted">Създаден с Flask и Bootstrap</span>
+          <span class="text-muted">Built with Flask and Bootstrap</span>
         </div>
       </footer>
     </main>

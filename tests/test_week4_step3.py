@@ -44,5 +44,5 @@ def test_passwords_are_hashed_and_account_is_scoped(client):
 
 
 def test_ai_boundary_is_disabled_until_week_five():
-    with pytest.raises(RuntimeError, match='Week 5'):
+    with pytest.raises(RuntimeError, match='AI е изключен'):
         DisabledStudyAdviceProvider().suggest({'topic': 'Math'})

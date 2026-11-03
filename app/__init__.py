@@ -11,7 +11,7 @@ load_dotenv()
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'main.login'
-login_manager.login_message = 'Моля, влезте в профила си.'
+login_manager.login_message = 'Please sign in to continue.'
 login_manager.login_message_category = 'info'
 
 
@@ -51,6 +51,12 @@ def create_app(test_config=None):
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE='Lax',
+        AI_PROVIDER=os.getenv('AI_PROVIDER', 'ollama').lower(),
+        OLLAMA_BASE_URL=os.getenv('OLLAMA_BASE_URL', 'http://127.0.0.1:11434'),
+        OLLAMA_MODEL=os.getenv('OLLAMA_MODEL', 'llama3.2'),
+
+
+        AI_TIMEOUT_SECONDS=os.getenv('AI_TIMEOUT_SECONDS', '60'),
         MAX_CONTENT_LENGTH=1024 * 1024,  # Reject oversized form submissions.
 
     )

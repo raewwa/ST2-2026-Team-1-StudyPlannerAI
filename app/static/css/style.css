@@ -108,3 +108,22 @@ body{min-height:100vh;background:#f2faff}
 .stat-card { color: #1b4965; transition: transform .15s ease, box-shadow .15s ease; }
 .stat-card:hover { transform: translateY(-2px); }
 .dashboard-progress { background: #287d78; }
+
+/* Dashboard: clear, task-oriented actions and comfortably spaced event times. */
+.dashboard-actions{display:grid;gap:.7rem}
+.dashboard-action{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;border:1px solid #d5e7ef;border-radius:.85rem;background:#f7fbfe;color:#1b4965;text-decoration:none;transition:background .15s,border-color .15s,transform .15s}
+.dashboard-action:hover,.dashboard-action:focus-visible{background:#e7f5fb;border-color:#62b6cb;color:#123b53;transform:translateY(-1px)}
+.dashboard-action-primary{background:#1b4965;border-color:#1b4965;color:#fff}
+.dashboard-action-primary:hover,.dashboard-action-primary:focus-visible{background:#286482;border-color:#286482;color:#fff}
+.dashboard-action-icon{display:grid;place-items:center;flex:0 0 2.6rem;height:2.6rem;border-radius:.65rem;background:#dceff7;font-size:1.25rem}
+.dashboard-action-primary .dashboard-action-icon{background:rgba(255,255,255,.15)}
+.dashboard-action-copy{display:flex;flex:1;flex-direction:column;gap:.12rem;min-width:0}
+.dashboard-action-copy strong{font-size:.94rem}
+.dashboard-action-copy small{font-size:.78rem;opacity:.75}
+.dashboard-action-arrow{opacity:.6}
+.dashboard-event{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;min-width:0}
+.dashboard-event-info{display:flex;align-items:center;gap:.65rem;min-width:0;flex:1}
+.dashboard-event-type{flex-shrink:0}
+.dashboard-event-title{overflow-wrap:anywhere}
+.dashboard-event-date{flex:0 0 auto;white-space:nowrap;font-size:.85rem;color:#547488;padding-inline:1rem 1.65rem;margin-inline-start:.75rem;border-left:1px solid #e2eef3}
+@media(max-width:575.98px){.dashboard-event{align-items:flex-start;flex-direction:column;gap:.55rem}.dashboard-event-date{border-left:0;padding-inline:0;margin-inline-start:0}.dashboard-event-info{align-items:flex-start}}

@@ -18,7 +18,7 @@ class StudyPlanningStrategy:
 class ExamDeadlineStrategy(StudyPlanningStrategy):
     """Prioritize the nearest upcoming exam, then tasks with deadlines."""
     key = 'exam'
-    label = 'Най-близък изпит'
+    label = 'Nearest Exam'
 
     def rank(self, goals, today):
         return sorted(goals, key=lambda g: (
@@ -31,7 +31,7 @@ class ExamDeadlineStrategy(StudyPlanningStrategy):
 class TaskPriorityStrategy(StudyPlanningStrategy):
     """Prioritize high-priority tasks, then upcoming exams."""
     key = 'priority'
-    label = 'Приоритет на задачите'
+    label = 'Task Priority'
 
     def rank(self, goals, today):
         return sorted(goals, key=lambda g: (
@@ -69,11 +69,11 @@ class StudyPlanner:
                     start, end = time(hour, 0), time(hour + 1, 0)
                     if any(d == day and a < end and b > start for d, a, b in occupied):
                         continue
-                    proposal = {'title': 'Подготовка: ' + goal['title'],
+                    proposal = {'title': 'Preparation: ' + goal['title'],
                                 'subject_id': goal['subject_id'],
                                 'session_date': day, 'start_time': start,
                                 'end_time': end, 'status': 'planned',
-                                'description': 'Предложение по стратегия: ' + self.strategy.label}
+                                'description': 'Strategy suggestion: ' + self.strategy.label}
                     proposals.append(proposal)
                     occupied.add((day, start, end))
                     break

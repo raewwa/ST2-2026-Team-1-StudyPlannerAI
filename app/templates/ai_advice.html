@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}AI Study Advice · AI Study Planner{% endblock %}
+{% block content %}
+<div class="container-fluid px-0">
+  <h1 class="h2 fw-bold mb-3">AI Study Advice</h1>
+  <p class="text-secondary">Ask your local Ollama study assistant a question. It can use your subjects, tasks and exams as context. Responses are in English. No chat history is stored.</p>
+  {% if not enabled %}<div class="alert alert-info">AI is disabled. Set AI_PROVIDER=ollama in .env.</div>{% endif %}
+  <form method="post" class="card card-body border-0 shadow-sm mb-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label class="form-label fw-semibold" for="user_prompt">Your message</label>
+    <textarea class="form-control mb-3" id="user_prompt" name="user_prompt" rows="5" maxlength="2000" placeholder="e.g. How should I prepare for my upcoming exams? Which tasks should I prioritize?">{{ user_prompt or '' }}</textarea>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <small class="text-secondary">Optional — leave blank for general study advice.</small>
+      <button class="btn btn-primary" type="submit" {% if not enabled %}disabled{% endif %}>Send to Ollama</button>
+    </div>
+  </form>
+  {% if error_message %}<div class="alert alert-warning" role="alert">{{ error_message }}</div>{% endif %}
+  {% if advice %}<section class="card border-0 shadow-sm"><div class="card-body">
+    <h2 class="h5">Ollama's response</h2>
+    <div class="ai-advice-text" style="white-space:pre-wrap">{{ advice }}</div>
+  </div></section>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}AI Study Plan · AI Study Planner{% endblock %}
+{% block content %}
+<h1 class="h2 fw-bold mb-3">Personalized AI Study Plan</h1>
+<p class="text-secondary">Local Ollama suggests sessions based on your subjects, tasks, exams and existing schedule. Nothing is saved without confirmation.</p>
+{% if not enabled %}<div class="alert alert-info">AI is disabled. Set AI_PROVIDER=ollama in .env.</div>{% endif %}
+<form method="post" class="card card-body border-0 shadow-sm mb-4">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="action" value="generate">
+  <label for="days" class="form-label fw-semibold">Planning period</label>
+  <select class="form-select mb-3" name="days" id="days">
+    <option value="7" {% if days == 7 %}selected{% endif %}>7 days</option>
+    <option value="14" {% if days == 14 %}selected{% endif %}>14 days</option>
+  </select>
+  <div><button class="btn btn-primary" {% if not enabled %}disabled{% endif %}>Generate AI Plan</button></div>
+</form>
+{% if error_message %}<div class="alert alert-warning" role="alert">{{ error_message }}</div>{% endif %}
+{% if preview %}
+<section class="card border-0 shadow-sm"><div class="card-body">
+<h2 class="h5 mb-3">Preview suggested sessions</h2>
+<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Session</th><th>Date</th><th>Time</th></tr></thead><tbody>
+{% for item in preview %}<tr><td>{{ item.title }}</td><td>{{ item.session_date.strftime('%d.%m.%Y') }}</td><td>{{ item.start_time.strftime('%H:%M') }}–{{ item.end_time.strftime('%H:%M') }}</td></tr>{% endfor %}
+</tbody></table></div>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="save"><input type="hidden" name="days" value="{{ days }}"><button class="btn btn-success">Confirm and save to schedule</button></form>
+</div></section>
+{% endif %}
+{% endblock %}
